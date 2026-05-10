@@ -1028,19 +1028,19 @@
     <span style="font-size:10px; color:#999">▾</span>
     <div class="lang-dropdown" id="langDropdown">
       <div class="lang-option active" onclick="setLang('ko')">
-        <img class="lang-option-flag" src="https://flagcdn.com/w40/kr.png" alt="KR"> 한국어
+        <img class="lang-option-flag" src="https://flagcdn.com/w40/kr.png" alt="KR"> <span id="lo_ko">한국어</span>
       </div>
       <div class="lang-option" onclick="setLang('en')">
-        <img class="lang-option-flag" src="https://flagcdn.com/w40/us.png" alt="US"> English
+        <img class="lang-option-flag" src="https://flagcdn.com/w40/us.png" alt="US"> <span id="lo_en">English</span>
       </div>
       <div class="lang-option" onclick="setLang('zh')">
-        <img class="lang-option-flag" src="https://flagcdn.com/w40/cn.png" alt="CN"> 中文
+        <img class="lang-option-flag" src="https://flagcdn.com/w40/cn.png" alt="CN"> <span id="lo_zh">中文</span>
       </div>
       <div class="lang-option" onclick="setLang('id')">
-        <img class="lang-option-flag" src="https://flagcdn.com/w40/id.png" alt="ID"> Bahasa Indonesia
+        <img class="lang-option-flag" src="https://flagcdn.com/w40/id.png" alt="ID"> <span id="lo_id">Bahasa Indonesia</span>
       </div>
       <div class="lang-option" onclick="setLang('mn')">
-        <img class="lang-option-flag" src="https://flagcdn.com/w40/mn.png" alt="MN"> Монгол
+        <img class="lang-option-flag" src="https://flagcdn.com/w40/mn.png" alt="MN"> <span id="lo_mn">Монгол</span>
       </div>
     </div>
   </div>
@@ -1235,15 +1235,15 @@
     <div class="chat-messages" id="demoMessages">
       <div class="msg bot">
         <div class="msg-avatar">🤖</div>
-        <div class="msg-bubble" data-i18n="chat_hello">안녕하세요! Medivia Lab AI 상담원 Mia입니다. 어떤 시술에 관심이 있으신가요? 😊</div>
+        <div class="msg-bubble" id="demoMsg1">안녕하세요! Medivia Lab AI 상담원 Mia입니다. 어떤 시술에 관심이 있으신가요? 😊</div>
       </div>
       <div class="msg user">
         <div class="msg-avatar">👤</div>
-        <div class="msg-bubble">코 성형 하고 싶은데 예산이 얼마나 필요해요?</div>
+        <div class="msg-bubble" id="demoMsg2">코 성형 하고 싶은데 예산이 얼마나 필요해요?</div>
       </div>
       <div class="msg bot">
         <div class="msg-avatar">🤖</div>
-        <div class="msg-bubble">코 성형은 시술 범위에 따라 다르지만, Medivia Lab 제휴 병원 기준으로 ₩2,500,000 ~ ₩6,000,000 수준입니다. 저희는 브로커 수수료 없이 한국인 동일 가격으로 안내해드려요! 구체적인 상담을 원하시면 아래에서 신청해보세요. 🏥</div>
+        <div class="msg-bubble" id="demoMsg3">코 성형은 시술 범위에 따라 다르지만, Medivia Lab 제휴 병원 기준으로 ₩2,500,000 ~ ₩6,000,000 수준입니다. 저희는 브로커 수수료 없이 한국인 동일 가격으로 안내해드려요! 구체적인 상담을 원하시면 아래에서 신청해보세요. 🏥</div>
       </div>
     </div>
     <div class="chat-input-area">
@@ -1315,14 +1315,14 @@
 
         <div class="form-group">
           <label data-i18n="form_proc">원하는 시술 부위 (복수 선택 가능)</label>
-          <div class="form-tags">
-            <div class="form-tag" onclick="toggleTag(this)">👁 눈 성형</div>
-            <div class="form-tag" onclick="toggleTag(this)">👃 코 성형</div>
-            <div class="form-tag" onclick="toggleTag(this)">🦷 치아</div>
-            <div class="form-tag" onclick="toggleTag(this)">💉 피부 시술</div>
-            <div class="form-tag" onclick="toggleTag(this)">⚖️ 윤곽 / 지방흡입</div>
-            <div class="form-tag" onclick="toggleTag(this)">💆 리프팅</div>
-            <div class="form-tag" onclick="toggleTag(this)">기타</div>
+          <div class="form-tags" id="formTagsContainer">
+            <div class="form-tag" id="ftag0" onclick="toggleTag(this)">👁 눈 성형</div>
+            <div class="form-tag" id="ftag1" onclick="toggleTag(this)">👃 코 성형</div>
+            <div class="form-tag" id="ftag2" onclick="toggleTag(this)">🦷 치아</div>
+            <div class="form-tag" id="ftag3" onclick="toggleTag(this)">💉 피부 시술</div>
+            <div class="form-tag" id="ftag4" onclick="toggleTag(this)">⚖️ 윤곽 / 지방흡입</div>
+            <div class="form-tag" id="ftag5" onclick="toggleTag(this)">💆 리프팅</div>
+            <div class="form-tag" id="ftag6" onclick="toggleTag(this)">기타</div>
           </div>
         </div>
 
@@ -1330,22 +1330,22 @@
           <div class="form-group">
             <label data-i18n="form_budget">예산 / Budget</label>
             <select>
-              <option>₩1M ~ ₩3M</option>
-              <option>₩3M ~ ₩5M</option>
-              <option>₩5M ~ ₩10M</option>
-              <option>₩10M+</option>
-              <option>미정 / Not sure</option>
+              <option id="bopt0">₩1M ~ ₩3M</option>
+              <option id="bopt1">₩3M ~ ₩5M</option>
+              <option id="bopt2">₩5M ~ ₩10M</option>
+              <option id="bopt3">₩10M+</option>
+              <option id="bopt4">미정 / Not sure</option>
             </select>
           </div>
           <div class="form-group">
             <label data-i18n="form_date">예상 방문일</label>
-            <input type="date">
+            <input type="text" id="formDateInput" placeholder="년 - 월 - 일" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
           </div>
         </div>
 
         <div class="form-group">
           <label data-i18n="form_note">추가 메모 / Additional notes</label>
-          <textarea placeholder="참고하고 싶은 사진이나 추가 요청사항을 자유롭게 작성해주세요..."></textarea>
+          <textarea id="formTextarea" placeholder="참고하고 싶은 사진이나 추가 요청사항을 자유롭게 작성해주세요..."></textarea>
         </div>
 
         <div class="form-group">
@@ -1566,6 +1566,61 @@
 </div>
 
 <script>
+
+// ===== PER-LANGUAGE DYNAMIC DATA =====
+const langData = {
+  ko: {
+    dropdownLabels: ['한국어','English','中文','Bahasa Indonesia','Монгол'],
+    demoMsg1: '안녕하세요! Medivia Lab AI 상담원 Mia입니다. 어떤 시술에 관심이 있으신가요? 😊',
+    demoMsg2: '코 성형 하고 싶은데 예산이 얼마나 필요해요?',
+    demoMsg3: '코 성형은 시술 범위에 따라 다르지만, Medivia Lab 제휴 병원 기준으로 ₩2,500,000 ~ ₩6,000,000 수준입니다. 저희는 브로커 수수료 없이 한국인 동일 가격으로 안내해드려요! 구체적인 상담을 원하시면 아래에서 신청해보세요. 🏥',
+    formTags: ['👁 눈 성형','👃 코 성형','🦷 치아','💉 피부 시술','⚖️ 윤곽 / 지방흡입','💆 리프팅','기타'],
+    budgetOptions: ['₩1M ~ ₩3M','₩3M ~ ₩5M','₩5M ~ ₩10M','₩10M+','미정 / 모르겠어요'],
+    textareaPlaceholder: '참고하고 싶은 사진이나 추가 요청사항을 자유롭게 작성해주세요...',
+    datePlaceholder: '년 - 월 - 일',
+  },
+  en: {
+    dropdownLabels: ['Korean','English','Chinese','Indonesian','Mongolian'],
+    demoMsg1: "Hi! I'm Mia, Medivia's AI consultant. What procedure are you interested in? 😊",
+    demoMsg2: "I'm thinking about rhinoplasty — how much does it cost?",
+    demoMsg3: "Rhinoplasty typically ranges from ₩2,500,000 to ₩6,000,000 depending on the scope. With Medivia, you pay the same local Korean price + only 5% platform fee. No broker markup! Fill out our consultation form below to get started. 🏥",
+    formTags: ['👁 Eye Surgery','👃 Rhinoplasty','🦷 Dental','💉 Skin Treatment','⚖️ Contouring / Liposuction','💆 Lifting','Other'],
+    budgetOptions: ['₩1M ~ ₩3M','₩3M ~ ₩5M','₩5M ~ ₩10M','₩10M+','Not sure yet'],
+    textareaPlaceholder: 'Feel free to describe your goals, share reference photos, or ask any questions...',
+    datePlaceholder: 'YYYY - MM - DD',
+  },
+  zh: {
+    dropdownLabels: ['韩语','英语','中文','印尼语','蒙古语'],
+    demoMsg1: '您好！我是Medivia的AI顾问Mia。您对哪种手术感兴趣呢？😊',
+    demoMsg2: '我想做鼻整形，大概需要多少费用？',
+    demoMsg3: '鼻整形根据手术范围通常在₩2,500,000至₩6,000,000之间。通过Medivia，您支付与韩国人相同的价格 + 仅5%平台费，无中介加价！请填写下方咨询申请表，我们的专属经理将为您服务。🏥',
+    formTags: ['👁 眼部手术','👃 鼻整形','🦷 牙科','💉 皮肤护理','⚖️ 轮廓 / 吸脂','💆 提升术','其他'],
+    budgetOptions: ['₩100万 ~ ₩300万','₩300万 ~ ₩500万','₩500万 ~ ₩1000万','₩1000万以上','尚未确定'],
+    textareaPlaceholder: '请随意描述您的需求、附上参考图片或提出任何问题...',
+    datePlaceholder: '年 - 月 - 日',
+  },
+  id: {
+    dropdownLabels: ['Korea','Inggris','Mandarin','Indonesia','Mongolia'],
+    demoMsg1: 'Halo! Saya Mia, asisten AI Medivia. Prosedur apa yang Anda minati? 😊',
+    demoMsg2: 'Saya ingin rhinoplasty, kira-kira butuh berapa biaya?',
+    demoMsg3: 'Rhinoplasty biasanya berkisar ₩2.500.000 hingga ₩6.000.000 tergantung cakupannya. Dengan Medivia, Anda membayar harga lokal Korea yang sama + hanya 5% biaya platform. Tanpa markup broker! Isi formulir konsultasi kami untuk memulai. 🏥',
+    formTags: ['👁 Operasi Mata','👃 Rhinoplasty','🦷 Gigi','💉 Perawatan Kulit','⚖️ Kontur / Liposuction','💆 Lifting','Lainnya'],
+    budgetOptions: ['Rp 3Jt ~ Rp 8Jt','Rp 8Jt ~ Rp 13Jt','Rp 13Jt ~ Rp 25Jt','Rp 25Jt+','Belum tahu'],
+    textareaPlaceholder: 'Ceritakan tujuan Anda, bagikan foto referensi, atau ajukan pertanyaan apa pun...',
+    datePlaceholder: 'YYYY - MM - DD',
+  },
+  mn: {
+    dropdownLabels: ['Солонгос','Англи','Хятад','Индонез','Монгол'],
+    demoMsg1: 'Сайн байна уу! Би Medivia-гийн AI зөвлөх Mia. Ямар мэс ажилбарт сонирхолтой байна уу? 😊',
+    demoMsg2: 'Хамрын мэс засал хийлгэхийг бодож байна, хэд болдог вэ?',
+    demoMsg3: 'Хамрын мэс засал хамрах хүрээнээс хамааран ₩2,500,000-аас ₩6,000,000 хүртэл байдаг. Medivia-р та Солонгосын орон нутгийн үнэ + зөвхөн 5% платформ хураамжаар авна. Зуучийн нэмэлтгүй! Доорх маягтыг бөглөж эхлэх боломжтой. 🏥',
+    formTags: ['👁 Нүдний мэс засал','👃 Хамрын мэс засал','🦷 Шүдний','💉 Арьсны эмчилгээ','⚖️ Хүрээ / Тарилагын арилгалт','💆 Өргөх','Бусад'],
+    budgetOptions: ['₩1М ~ ₩3М','₩3М ~ ₩5М','₩5М ~ ₩10М','₩10М+','Мэдэхгүй байна'],
+    textareaPlaceholder: 'Зорилгоо тайлбарлах, лавлагаа зураг хавсаргах эсвэл асуулт асуух боломжтой...',
+    datePlaceholder: 'ЖЖЖЖ - СС - ӨӨ',
+  },
+};
+
 // ===== LANGUAGE DATA (COMPLETE - ALL KEYS ALL 5 LANGUAGES) =====
 const i18n = {
   ko: {
@@ -1788,6 +1843,13 @@ function setLang(lang) {
   document.getElementById('currentFlag').src = flagSrcs[lang];
   document.getElementById('currentLang').textContent = names[lang];
 
+  // 드롭다운 각 옵션 텍스트도 해당 언어로
+  const dropdownNames = langData[lang] ? langData[lang].dropdownLabels : langData['ko'].dropdownLabels;
+  ['ko','en','zh','id','mn'].forEach((l,i) => {
+    const el = document.getElementById('lo_'+l);
+    if (el) el.textContent = dropdownNames[i];
+  });
+
   document.querySelectorAll('.lang-option').forEach((el, i) => {
     el.classList.remove('active');
     if (['ko','en','zh','id','mn'][i] === lang) el.classList.add('active');
@@ -1803,7 +1865,38 @@ function setLang(lang) {
 
   document.getElementById('langDropdown').classList.remove('open');
 
-  // Update floating chat UI to match language
+  // 데모 채팅 메시지 교체
+  const ld = langData[lang] || langData['ko'];
+  const dm1 = document.getElementById('demoMsg1');
+  const dm2 = document.getElementById('demoMsg2');
+  const dm3 = document.getElementById('demoMsg3');
+  if (dm1) dm1.textContent = ld.demoMsg1;
+  if (dm2) dm2.textContent = ld.demoMsg2;
+  if (dm3) dm3.textContent = ld.demoMsg3;
+
+  // 폼 태그 버튼 교체
+  const tags = ld.formTags;
+  tags.forEach((t, i) => {
+    const el = document.getElementById('ftag' + i);
+    if (el) el.textContent = t;
+  });
+
+  // 예산 옵션 교체
+  const budgets = ld.budgetOptions;
+  budgets.forEach((b, i) => {
+    const el = document.getElementById('bopt' + i);
+    if (el) el.textContent = b;
+  });
+
+  // textarea placeholder 교체
+  const ta = document.getElementById('formTextarea');
+  if (ta) ta.placeholder = ld.textareaPlaceholder;
+
+  // 날짜 input placeholder 교체
+  const di = document.getElementById('formDateInput');
+  if (di && di.type === 'text') di.placeholder = ld.datePlaceholder;
+
+  // AI 채팅 UI 교체
   const ui = chatUI[lang] || chatUI['ko'];
   const popupTitleEl = document.querySelector('.ai-popup-title > div > div:first-child');
   if (popupTitleEl) popupTitleEl.textContent = ui.title;
@@ -1818,6 +1911,10 @@ function setLang(lang) {
     qrs[2].textContent = ui.q3; qrs[2].onclick = () => quickSend(ui.q3);
     qrs[3].textContent = ui.q4; qrs[3].onclick = () => quickSend(ui.q4);
   }
+
+  // 플로팅 팝업 초기 메시지도 해당 언어로
+  const popupInitMsg = document.querySelector('#popupMessages .msg-bubble');
+  if (popupInitMsg) popupInitMsg.textContent = ld.demoMsg1;
 }
 
 function toggleLang(e) {
