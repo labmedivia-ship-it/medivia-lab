@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medivia Lab — 관리자 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A86C; --gold-light: #E8D5B0; --gold-dark: #8B6914;
+    --cream: #FAF8F3; --white: #FFFFFF; --dark: #0F0F0F; --dark2: #1A1A1A;
+    --gray: #6B6B6B; --gray-light: #E8E8E0; --gray-2: #F5F4F0;
+    --green: #2D8C5E; --green-bg: #EAF5EE;
+    --blue: #2563EB; --blue-bg: #EFF6FF;
+    --orange: #D97706; --orange-bg: #FEF3C7;
+    --red: #DC2626; --red-bg: #FEF2F2;
+    --purple: #7C3AED; --purple-bg: #F5F3FF;
+    --sidebar-w: 240px;
+    --font: 'DM Sans', sans-serif;
+    --font-d: 'Playfair Display', serif;
+    --radius: 12px; --radius-sm: 8px;
+    --tr: all 0.2s ease;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:var(--font); background:var(--gray-2); color:var(--dark); display:flex; min-height:100vh; font-size:14px; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width:var(--sidebar-w); background:var(--dark2); position:fixed; top:0; left:0; bottom:0;
+    display:flex; flex-direction:column; z-index:100;
+    border-right:1px solid rgba(255,255,255,0.05);
+  }
+  .sidebar-logo {
+    padding:20px; border-bottom:1px solid rgba(255,255,255,0.06);
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo-mark {
+    width:32px; height:32px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-d); font-size:14px; font-weight:500; color:white;
+  }
+  .logo-text { font-size:15px; font-weight:500; color:white; }
+  .logo-text span { color:var(--gold); font-size:11px; display:block; font-weight:300; }
+
+  .sidebar-nav { flex:1; padding:16px 12px; overflow-y:auto; }
+  .nav-section-label {
+    font-size:10px; font-weight:500; color:rgba(255,255,255,0.25);
+    text-transform:uppercase; letter-spacing:1.5px; padding:8px 8px 6px;
+  }
+  .nav-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 10px; border-radius:var(--radius-sm);
+    color:rgba(255,255,255,0.5); cursor:pointer;
+    transition:var(--tr); margin-bottom:2px; font-size:13px;
+    text-decoration:none;
+  }
+  .nav-item:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.85); }
+  .nav-item.active { background:rgba(201,168,108,0.15); color:var(--gold); }
+  .nav-item .icon { font-size:16px; width:20px; text-align:center; }
+  .nav-badge {
+    margin-left:auto; background:var(--red); color:white;
+    font-size:10px; font-weight:600; padding:2px 6px; border-radius:10px;
+  }
+  .nav-badge.gold { background:var(--gold-dark); }
+
+  .sidebar-bottom {
+    padding:12px; border-top:1px solid rgba(255,255,255,0.06);
+  }
+  .user-info {
+    display:flex; align-items:center; gap:10px; padding:8px;
+    border-radius:var(--radius-sm); cursor:pointer;
+    transition:var(--tr);
+  }
+  .user-info:hover { background:rgba(255,255,255,0.06); }
+  .user-avatar {
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    display:flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  .user-name { font-size:13px; color:rgba(255,255,255,0.8); font-weight:500; }
+  .user-role { font-size:11px; color:rgba(255,255,255,0.3); }
+
+  /* MAIN */
+  .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+  /* TOPBAR */
+  .topbar {
+    background:white; border-bottom:1px solid var(--gray-light);
+    padding:0 28px; height:60px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:50;
+  }
+  .topbar-left { display:flex; align-items:center; gap:16px; }
+  .page-title { font-size:16px; font-weight:600; color:var(--dark); }
+  .page-subtitle { font-size:12px; color:var(--gray); }
+
+  .topbar-right { display:flex; align-items:center; gap:12px; }
+  .topbar-btn {
+    display:flex; align-items:center; gap:6px;
+    padding:7px 14px; border-radius:20px;
+    font-size:12px; font-weight:500; cursor:pointer;
+    border:1.5px solid var(--gray-light); background:white;
+    transition:var(--tr); color:var(--dark);
+  }
+  .topbar-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
+  .topbar-btn.primary { background:var(--dark); color:white; border-color:var(--dark); }
+  .topbar-btn.primary:hover { background:var(--gold-dark); border-color:var(--gold-dark); }
+
+  .notif-btn {
+    width:36px; height:36px; border-radius:50%; background:var(--gray-2);
+    border:1.5px solid var(--gray-light); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:18px; position:relative; transition:var(--tr);
+  }
+  .notif-btn:hover { border-color:var(--gold); }
+  .notif-dot {
+    position:absolute; top:4px; right:4px; width:8px; height:8px;
+    background:var(--red); border-radius:50%; border:2px solid white;
+  }
+
+  /* CONTENT */
+  .content { padding:24px 28px; flex:1; }
+
+  /* STAT CARDS */
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+
+  .stat-card {
+    background:white; border:1px solid var(--gray-light); border-radius:var(--radius);
+    padding:20px; transition:var(--tr);
+  }
+  .stat-card:hover { border-color:var(--gold-light); box-shadow:var(--shadow); }
+
+  .stat-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+  .stat-icon {
+    width:40px; height:40px; border-radius:var(--radius-sm);
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+  }
+  .stat-change { font-size:11px; font-weight:500; display:flex; align-items:center; gap:3px; }
+  .stat-change.up { color:var(--green); }
+  .stat-change.down { color:var(--red); }
+
+  .stat-num { font-family:var(--font-d); font-size:28px; font-weight:500; color:var(--dark); }
+  .stat-label { font-size:12px; color:var(--gray); margin-top:2px; }
+
+  /* MAIN GRID */
+  .main-grid { display:grid; grid-template-columns:1.6fr 1fr; gap:20px; }
+
+  /* TABLE */
+  .panel {
+    background:white; border:1px solid var(--gray-light); border-radius:var(--radius); overflow:hidden;
+  }
+  .panel-header {
+    padding:16px 20px; border-bottom:1px solid var(--gray-light);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .panel-title { font-size:14px; font-weight:600; color:var(--dark); }
+  .panel-action {
+    font-size:12px; color:var(--gold-dark); cursor:pointer;
+    padding:5px 12px; border:1px solid var(--gold-light); border-radius:20px;
+    transition:var(--tr);
+  }
+  .panel-action:hover { background:var(--gold-light); }
+
+  /* FILTER TABS */
+  .filter-tabs {
+    display:flex; gap:4px; padding:12px 20px 0;
+    border-bottom:1px solid var(--gray-light);
+  }
+  .ftab {
+    padding:8px 14px; font-size:12px; font-weight:500; color:var(--gray);
+    cursor:pointer; border-bottom:2px solid transparent;
+    transition:var(--tr); white-space:nowrap;
+  }
+  .ftab:hover { color:var(--dark); }
+  .ftab.active { color:var(--gold-dark); border-color:var(--gold); }
+
+  /* CONSULTATION LIST */
+  .consult-list { }
+  .consult-item {
+    padding:14px 20px; border-bottom:1px solid var(--gray-light);
+    display:flex; align-items:center; gap:14px; cursor:pointer;
+    transition:var(--tr);
+  }
+  .consult-item:hover { background:var(--gray-2); }
+  .consult-item:last-child { border-bottom:none; }
+
+  .ci-flag { font-size:24px; flex-shrink:0; }
+
+  .ci-info { flex:1; min-width:0; }
+  .ci-name { font-size:13px; font-weight:600; color:var(--dark); }
+  .ci-proc { font-size:12px; color:var(--gray); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ci-time { font-size:11px; color:var(--gray); }
+
+  .ci-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .ci-budget { font-size:12px; font-weight:500; color:var(--dark); }
+
+  .badge {
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:10px; font-weight:500; padding:3px 9px; border-radius:20px;
+    white-space:nowrap;
+  }
+  .badge.new { background:var(--blue-bg); color:var(--blue); }
+  .badge.pending { background:var(--orange-bg); color:var(--orange); }
+  .badge.confirmed { background:var(--green-bg); color:var(--green); }
+  .badge.completed { background:var(--gray-2); color:var(--gray); }
+  .badge.urgent { background:var(--red-bg); color:var(--red); }
+
+  .badge-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+
+  /* RIGHT PANELS */
+  .right-col { display:flex; flex-direction:column; gap:20px; }
+
+  /* NOTIFICATIONS */
+  .notif-list { }
+  .notif-item {
+    padding:12px 16px; border-bottom:1px solid var(--gray-light);
+    display:flex; align-items:flex-start; gap:10px;
+    transition:var(--tr); cursor:pointer;
+  }
+  .notif-item:hover { background:var(--gray-2); }
+  .notif-item:last-child { border-bottom:none; }
+  .notif-item.unread { background:#FFFDF8; }
+
+  .notif-dot-outer { margin-top:4px; width:8px; height:8px; flex-shrink:0; }
+  .notif-dot-inner { width:8px; height:8px; border-radius:50%; }
+  .notif-dot-inner.blue { background:var(--blue); }
+  .notif-dot-inner.green { background:var(--green); }
+  .notif-dot-inner.orange { background:var(--orange); }
+  .notif-dot-inner.red { background:var(--red); }
+  .notif-dot-inner.gray { background:var(--gray); }
+
+  .notif-text { flex:1; font-size:12px; line-height:1.5; color:var(--dark); }
+  .notif-text strong { font-weight:600; }
+  .notif-time { font-size:11px; color:var(--gray); margin-top:2px; }
+
+  /* QUICK STATS */
+  .mini-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px; }
+  .mini-stat {
+    background:var(--gray-2); border-radius:var(--radius-sm);
+    padding:12px; text-align:center;
+  }
+  .mini-stat-num { font-size:20px; font-weight:600; color:var(--dark); }
+  .mini-stat-label { font-size:10px; color:var(--gray); margin-top:2px; }
+
+  /* DETAIL MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200;
+    display:none; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:white; border-radius:var(--radius); width:560px; max-width:95vw;
+    max-height:90vh; overflow-y:auto;
+    animation:modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+  .modal-header {
+    padding:20px 24px; border-bottom:1px solid var(--gray-light);
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; background:white; z-index:1;
+  }
+  .modal-title { font-size:16px; font-weight:600; }
+  .modal-close {
+    width:32px; height:32px; border-radius:50%; background:var(--gray-2);
+    border:none; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center;
+    transition:var(--tr);
+  }
+  .modal-close:hover { background:var(--gray-light); }
+
+  .modal-body { padding:24px; }
+
+  .detail-row {
+    display:grid; grid-template-columns:120px 1fr; gap:12px;
+    padding:10px 0; border-bottom:1px solid var(--gray-light); align-items:start;
+  }
+  .detail-row:last-child { border-bottom:none; }
+  .detail-label { font-size:12px; color:var(--gray); font-weight:500; padding-top:1px; }
+  .detail-value { font-size:13px; color:var(--dark); }
+
+  .modal-actions { padding:16px 24px; border-top:1px solid var(--gray-light); display:flex; gap:10px; flex-wrap:wrap; }
+
+  .btn {
+    padding:9px 18px; border-radius:20px; font-size:13px; font-weight:500;
+    cursor:pointer; border:1.5px solid; transition:var(--tr);
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn-dark { background:var(--dark); color:white; border-color:var(--dark); }
+  .btn-dark:hover { background:var(--gold-dark); border-color:var(--gold-dark); }
+  .btn-outline-sm { background:white; color:var(--dark); border-color:var(--gray-light); }
+  .btn-outline-sm:hover { border-color:var(--gold); color:var(--gold-dark); }
+  .btn-green { background:var(--green); color:white; border-color:var(--green); }
+  .btn-green:hover { opacity:0.9; }
+
+  /* STATUS CHANGE */
+  .status-select {
+    padding:6px 10px; border-radius:20px; font-size:12px;
+    border:1.5px solid var(--gray-light); background:white; cursor:pointer;
+    font-family:var(--font);
+  }
+
+  /* SEARCH */
+  .search-bar {
+    padding:10px 20px; border-bottom:1px solid var(--gray-light);
+    display:flex; align-items:center; gap:8px;
+  }
+  .search-input {
+    flex:1; border:none; outline:none; font-size:13px; color:var(--dark);
+    background:transparent; font-family:var(--font);
+  }
+  .search-input::placeholder { color:var(--gray); }
+
+  /* CALENDAR MINI */
+  .mini-cal { padding:16px; }
+  .mini-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .mini-cal-title { font-size:13px; font-weight:600; }
+  .mini-cal-nav { font-size:14px; cursor:pointer; color:var(--gray); padding:2px 6px; border-radius:4px; }
+  .mini-cal-nav:hover { background:var(--gray-2); }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day-label { text-align:center; font-size:10px; color:var(--gray); padding:4px 0; }
+  .cal-day {
+    text-align:center; font-size:11px; padding:5px 2px; border-radius:4px;
+    cursor:pointer; transition:var(--tr); color:var(--dark);
+  }
+  .cal-day:hover { background:var(--gray-2); }
+  .cal-day.today { background:var(--dark); color:white; border-radius:50%; }
+  .cal-day.has-event { font-weight:600; color:var(--gold-dark); }
+  .cal-day.has-event::after { content:'·'; display:block; font-size:14px; margin-top:-4px; }
+  .cal-day.other-month { color:var(--gray-light); }
+
+  /* CHART BAR (simple CSS) */
+  .chart-area { padding:16px 20px; }
+  .chart-bars { display:flex; align-items:flex-end; gap:6px; height:80px; }
+  .chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .chart-bar {
+    width:100%; border-radius:4px 4px 0 0;
+    background:linear-gradient(to top, var(--gold-dark), var(--gold-light));
+    transition:var(--tr); cursor:pointer; min-height:4px;
+    position:relative;
+  }
+  .chart-bar:hover { opacity:0.8; }
+  .chart-bar-label { font-size:9px; color:var(--gray); }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:24px; right:24px; z-index:999;
+    background:var(--dark); color:white; padding:12px 20px;
+    border-radius:var(--radius-sm); font-size:13px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    display:none; align-items:center; gap:10px;
+    animation:toastIn 0.3s ease;
+  }
+  .toast.show { display:flex; }
+  @keyframes toastIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--gray-light); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">M</div>
+    <div class="logo-text">Medivia Lab <span>Admin Dashboard</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">메인</div>
+    <a class="nav-item active" onclick="showPage('dashboard')">
+      <span class="icon">📊</span> 대시보드
+    </a>
+
+    <div class="nav-section-label" style="margin-top:12px;">상담 관리</div>
+    <a class="nav-item" onclick="showPage('consultations')">
+      <span class="icon">📋</span> 상담 신청서
+      <span class="nav-badge" id="newCount">7</span>
+    </a>
+    <a class="nav-item" onclick="showPage('calendar')">
+      <span class="icon">📅</span> 예약 캘린더
+    </a>
+    <a class="nav-item" onclick="showPage('payments')">
+      <span class="icon">💳</span> 결제 관리
+      <span class="nav-badge gold">3</span>
+    </a>
+
+    <div class="nav-section-label" style="margin-top:12px;">콘텐츠</div>
+    <a class="nav-item" onclick="showPage('reviews')">
+      <span class="icon">⭐</span> 후기 관리
+    </a>
+    <a class="nav-item" onclick="showPage('hospitals')">
+      <span class="icon">🏥</span> 병원 관리
+    </a>
+    <a class="nav-item" onclick="showPage('managers')">
+      <span class="icon">👥</span> 매니저 관리
+    </a>
+
+    <div class="nav-section-label" style="margin-top:12px;">설정</div>
+    <a class="nav-item" onclick="showPage('settings')">
+      <span class="icon">⚙️</span> 시스템 설정
+    </a>
+    <a class="nav-item" onclick="window.open('index.html','_blank')">
+      <span class="icon">🌐</span> 사이트 보기
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user-info">
+      <div class="user-avatar">👩</div>
+      <div>
+        <div class="user-name">김지현 매니저</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="pageTitle">대시보드</div>
+        <div class="page-subtitle" id="pageSubtitle">2025년 5월 10일 · 오늘의 현황</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" onclick="toggleNotifPanel()">
+        🔔
+        <div class="notif-dot"></div>
+      </div>
+      <div class="topbar-btn" onclick="exportData()">📥 내보내기</div>
+      <div class="topbar-btn primary" onclick="openNewConsult()">+ 수동 등록</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background:#EFF6FF;">📋</div>
+          <div class="stat-change up">↑ 23%</div>
+        </div>
+        <div class="stat-num">47</div>
+        <div class="stat-label">이번 달 신규 상담</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background:#EAF5EE;">✅</div>
+          <div class="stat-change up">↑ 18%</div>
+        </div>
+        <div class="stat-num">31</div>
+        <div class="stat-label">예약 확정 건수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background:#FEF3C7;">💰</div>
+          <div class="stat-change up">↑ 34%</div>
+        </div>
+        <div class="stat-num">₩28.4M</div>
+        <div class="stat-label">이번 달 수수료 수익 (5%)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background:#FEF2F2;">⏰</div>
+          <div class="stat-change down">↓ 2건</div>
+        </div>
+        <div class="stat-num">7</div>
+        <div class="stat-label">오늘 신규 상담 (미처리)</div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+      <!-- LEFT: CONSULTATION LIST -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">상담 신청 목록</div>
+          <div class="panel-action" onclick="showPage('consultations')">전체 보기 →</div>
+        </div>
+
+        <div class="filter-tabs">
+          <div class="ftab active" onclick="filterTab(this,'all')">전체 <span style="color:var(--gray);font-weight:400;">(47)</span></div>
+          <div class="ftab" onclick="filterTab(this,'new')">신규 <span style="color:var(--blue);">(7)</span></div>
+          <div class="ftab" onclick="filterTab(this,'pending')">진행중 <span style="color:var(--orange);">(12)</span></div>
+          <div class="ftab" onclick="filterTab(this,'confirmed')">예약완료 <span style="color:var(--green);">(28)</span></div>
+        </div>
+
+        <div class="search-bar">
+          <span style="font-size:14px;color:var(--gray);">🔍</span>
+          <input type="text" class="search-input" placeholder="이름, 국가, 시술명으로 검색..." oninput="filterConsultations(this.value)">
+        </div>
+
+        <div class="consult-list" id="consultList">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="right-col">
+        <!-- NOTIFICATIONS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">🔔 실시간 알림</div>
+            <div class="panel-action" onclick="markAllRead()">모두 읽음</div>
+          </div>
+          <div class="notif-list" id="notifList">
+            <!-- Generated by JS -->
+          </div>
+        </div>
+
+        <!-- WEEKLY CHART -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">📈 주간 상담 현황</div>
+          </div>
+          <div class="chart-area">
+            <div class="chart-bars" id="weekChart"></div>
+          </div>
+        </div>
+
+        <!-- MINI CALENDAR -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">📅 예약 캘린더</div>
+          </div>
+          <div class="mini-cal">
+            <div class="mini-cal-header">
+              <span class="mini-cal-nav" onclick="prevMonth()">‹</span>
+              <span class="mini-cal-title" id="calTitle"></span>
+              <span class="mini-cal-nav" onclick="nextMonth()">›</span>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="mini-stat-num" style="color:var(--blue);">8</div>
+              <div class="mini-stat-label">이번 주 예약</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-num" style="color:var(--green);">3</div>
+              <div class="mini-stat-label">오늘 방문</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-num" style="color:var(--orange);">5</div>
+              <div class="mini-stat-label">대기 중 견적</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-num" style="color:var(--gold-dark);">92%</div>
+              <div class="mini-stat-label">전환율</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="detailModal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">상담 상세 정보</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+    </div>
+    <div class="modal-actions" id="modalActions">
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastMsg">저장되었습니다</span>
+</div>
+
+<script>
+// DATA
+const consultations = [
+  { id:'C001', flag:'🇮🇩', name:'Putri Andiani', country:'Indonesia', proc:'코 성형 + 눈 성형', budget:'₩5M~₩8M', date:'2025.05.10', time:'09:23', status:'new', note:'참고 사진 첨부됨. 6월 말 방문 희망. 인도네시아어 매니저 요청.', whatsapp:'+62812-1234-5678', manager:'미배정' },
+  { id:'C002', flag:'🇨🇳', name:'李晓雨', country:'China', proc:'피부 레이저 + 보톡스', budget:'₩2M~₩3M', date:'2025.05.10', time:'08:14', status:'new', note:'피부 트러블 개선 목적. 여러 병원 견적 비교 원함.', whatsapp:'WeChat: xiaoyu_li', manager:'미배정' },
+  { id:'C003', flag:'🇲🇳', name:'Oyunaa Gantulga', country:'Mongolia', proc:'쌍꺼풀 + 앞트임', budget:'₩2M~₩4M', date:'2025.05.09', time:'20:55', status:'pending', note:'몽골 현지에서 카카오톡으로 문의 중. 7월 방문 예정.', whatsapp:'+976-9988-7766', manager:'박수민 매니저' },
+  { id:'C004', flag:'🇺🇸', name:'Sarah Mitchell', country:'USA', proc:'코 성형 (재수술)', budget:'₩6M~₩10M', date:'2025.05.09', time:'14:30', status:'pending', note:'3년 전 미국에서 수술 후 불만족. 재수술 전문 병원 요청.', whatsapp:'+1-310-555-0128', manager:'이지은 매니저' },
+  { id:'C005', flag:'🇮🇩', name:'Dewi Kusuma', country:'Indonesia', proc:'지방흡입 (복부+허벅지)', budget:'₩8M~₩12M', date:'2025.05.08', time:'11:20', status:'confirmed', note:'6월 3일 청담 O클리닉 예약 확정. 결제 완료.', whatsapp:'+62813-9876-5432', manager:'박수민 매니저' },
+  { id:'C006', flag:'🇲🇳', name:'Enkhtuya Bold', country:'Mongolia', proc:'안면 윤곽 (광대축소)', budget:'₩10M~₩15M', date:'2025.05.08', time:'09:00', status:'confirmed', note:'5월 25일 강남 P클리닉 예약 확정. 몽골 에스코트 포함.', whatsapp:'+976-8877-6655', manager:'이지은 매니저' },
+  { id:'C007', flag:'🇨🇳', name:'王雪婷', country:'China', proc:'턱끝 성형 + 코 성형', budget:'₩8M~₩12M', date:'2025.05.07', time:'16:40', status:'new', note:'SNS 통해 유입. 중국어 상담 요청. 의사 포트폴리오 원함.', whatsapp:'WeChat: xueting_wang', manager:'미배정' },
+  { id:'C008', flag:'🇮🇩', name:'Siti Rahayu', country:'Indonesia', proc:'피부 미백 레이저', budget:'₩1M~₩2M', date:'2025.05.07', time:'13:15', status:'completed', note:'4월 말 방문 완료. 후기 작성 요청 중.', whatsapp:'+62821-5544-3322', manager:'박수민 매니저' },
+];
+
+const notifications = [
+  { type:'blue', title:'<strong>새 상담 신청</strong>', desc:'Putri Andiani (인도네시아)가 코+눈 성형 상담을 신청했습니다.', time:'방금 전', unread:true },
+  { type:'blue', title:'<strong>새 상담 신청</strong>', desc:'李晓雨 (중국)가 피부 시술 상담을 신청했습니다.', time:'47분 전', unread:true },
+  { type:'green', title:'<strong>결제 완료</strong>', desc:'Dewi Kusuma의 결제 ₩5,680,000이 확인되었습니다.', time:'2시간 전', unread:true },
+  { type:'orange', title:'<strong>매니저 액션 필요</strong>', desc:'Sarah Mitchell의 재수술 견적 요청이 48시간 초과했습니다.', time:'4시간 전', unread:false },
+  { type:'green', title:'<strong>후기 등록</strong>', desc:'Siti Rahayu가 5점 후기를 작성했습니다.', time:'1일 전', unread:false },
+];
+
+const weekData = [
+  { label:'월', val:60 }, { label:'화', val:45 }, { label:'수', val:80 },
+  { label:'목', val:55 }, { label:'금', val:90 }, { label:'토', val:40 }, { label:'일', val:30 }
+];
+
+// RENDER CONSULT LIST
+function renderConsultList(items) {
+  const container = document.getElementById('consultList');
+  container.innerHTML = items.map(c => `
+    <div class="consult-item" onclick="openDetail('${c.id}')">
+      <div class="ci-flag">${c.flag}</div>
+      <div class="ci-info">
+        <div class="ci-name">${c.name} <span style="font-size:11px;color:var(--gray);font-weight:400;">${c.country}</span></div>
+        <div class="ci-proc">${c.proc}</div>
+        <div class="ci-time">${c.date} ${c.time}</div>
+      </div>
+      <div class="ci-meta">
+        <div class="ci-budget">${c.budget}</div>
+        <div class="badge ${c.status}">
+          <div class="badge-dot"></div>
+          ${statusLabel(c.status)}
+        </div>
+        <div style="font-size:10px;color:var(--gray);">${c.manager}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function statusLabel(s) {
+  return { new:'신규', pending:'진행중', confirmed:'예약완료', completed:'완료', urgent:'긴급' }[s] || s;
+}
+
+function filterTab(el, status) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (status === 'all') renderConsultList(consultations);
+  else renderConsultList(consultations.filter(c => c.status === status));
+}
+
+function filterConsultations(q) {
+  if (!q) { renderConsultList(consultations); return; }
+  const lower = q.toLowerCase();
+  renderConsultList(consultations.filter(c =>
+    c.name.toLowerCase().includes(lower) ||
+    c.country.toLowerCase().includes(lower) ||
+    c.proc.toLowerCase().includes(lower)
+  ));
+}
+
+// RENDER NOTIFICATIONS
+function renderNotifications() {
+  const container = document.getElementById('notifList');
+  container.innerHTML = notifications.map((n, i) => `
+    <div class="notif-item ${n.unread?'unread':''}" onclick="markRead(${i})">
+      <div class="notif-dot-outer"><div class="notif-dot-inner ${n.type}"></div></div>
+      <div class="notif-text">
+        ${n.title}<br>${n.desc}
+        <div class="notif-time">${n.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function markRead(i) {
+  notifications[i].unread = false;
+  renderNotifications();
+  updateNewCount();
+}
+
+function markAllRead() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifications();
+  updateNewCount();
+  toast('✅', '모든 알림을 읽음 처리했습니다');
+}
+
+function updateNewCount() {
+  const unread = notifications.filter(n => n.unread).length;
+  document.querySelector('.notif-dot').style.display = unread ? 'block' : 'none';
+}
+
+// CHART
+function renderChart() {
+  const max = Math.max(...weekData.map(d => d.val));
+  document.getElementById('weekChart').innerHTML = weekData.map(d => `
+    <div class="chart-bar-wrap">
+      <div class="chart-bar" style="height:${(d.val/max)*70}px;" title="${d.val}건"></div>
+      <div class="chart-bar-label">${d.label}</div>
+    </div>
+  `).join('');
+}
+
+// CALENDAR
+let calDate = new Date(2025, 4, 1); // May 2025
+const eventDays = [3, 8, 12, 15, 19, 22, 25, 28];
+
+function renderCalendar() {
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('calTitle').textContent = `2025년 ${months[calDate.getMonth()]}`;
+
+  const firstDay = new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay();
+  const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth()+1, 0).getDate();
+  const today = new Date();
+
+  const days = ['일','월','화','수','목','금','토'];
+  let html = days.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day other-month"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === today.getDate() && calDate.getMonth() === today.getMonth();
+    const hasEvent = eventDays.includes(d);
+    html += `<div class="cal-day ${isToday?'today':''} ${hasEvent&&!isToday?'has-event':''}">${d}</div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function prevMonth() { calDate.setMonth(calDate.getMonth()-1); renderCalendar(); }
+function nextMonth() { calDate.setMonth(calDate.getMonth()+1); renderCalendar(); }
+
+// DETAIL MODAL
+function openDetail(id) {
+  const c = consultations.find(x => x.id === id);
+  if (!c) return;
+
+  document.getElementById('modalTitle').textContent = `${c.flag} ${c.name} — ${c.id}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-row"><div class="detail-label">국가</div><div class="detail-value">${c.flag} ${c.country}</div></div>
+    <div class="detail-row"><div class="detail-label">시술</div><div class="detail-value">${c.proc}</div></div>
+    <div class="detail-row"><div class="detail-label">예산</div><div class="detail-value">${c.budget}</div></div>
+    <div class="detail-row"><div class="detail-label">연락처</div><div class="detail-value">${c.whatsapp}</div></div>
+    <div class="detail-row"><div class="detail-label">신청일시</div><div class="detail-value">${c.date} ${c.time}</div></div>
+    <div class="detail-row"><div class="detail-label">담당 매니저</div><div class="detail-value">
+      <select class="status-select" onchange="assignManager('${id}', this.value)">
+        <option ${c.manager==='미배정'?'selected':''}>미배정</option>
+        <option ${c.manager==='박수민 매니저'?'selected':''}>박수민 매니저</option>
+        <option ${c.manager==='이지은 매니저'?'selected':''}>이지은 매니저</option>
+        <option ${c.manager==='김하은 매니저'?'selected':''}>김하은 매니저</option>
+      </select>
+    </div></div>
+    <div class="detail-row"><div class="detail-label">상태</div><div class="detail-value">
+      <select class="status-select" onchange="changeStatus('${id}', this.value)">
+        <option value="new" ${c.status==='new'?'selected':''}>신규</option>
+        <option value="pending" ${c.status==='pending'?'selected':''}>진행중</option>
+        <option value="confirmed" ${c.status==='confirmed'?'selected':''}>예약완료</option>
+        <option value="completed" ${c.status==='completed'?'selected':''}>완료</option>
+      </select>
+    </div></div>
+    <div class="detail-row"><div class="detail-label">메모</div><div class="detail-value" style="color:var(--gray);">${c.note}</div></div>
+    <div class="detail-row" style="border:none;"><div class="detail-label">내부 메모</div>
+      <div class="detail-value"><textarea style="width:100%;height:70px;padding:8px;border:1.5px solid var(--gray-light);border-radius:8px;font-family:var(--font);font-size:12px;resize:none;outline:none;" placeholder="내부 메모를 입력하세요..." onfocus="this.style.borderColor='var(--gold)'"></textarea></div>
+    </div>
+  `;
+
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn btn-dark" onclick="contactWhatsApp('${c.whatsapp}')">💬 WhatsApp 연락</button>
+    <button class="btn btn-green" onclick="changeStatus('${id}','confirmed');toast('✅','예약 확정 처리되었습니다')">✅ 예약 확정</button>
+    <button class="btn btn-outline-sm" onclick="saveNote('${id}')">💾 메모 저장</button>
+    <button class="btn btn-outline-sm" style="color:var(--red);border-color:var(--red);" onclick="confirmDelete('${id}')">🗑 삭제</button>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function changeStatus(id, status) {
+  const c = consultations.find(x => x.id === id);
+  if (c) {
+    c.status = status;
+    renderConsultList(consultations);
+    toast('✅', `상태가 "${statusLabel(status)}"으로 변경되었습니다`);
+  }
+}
+
+function assignManager(id, manager) {
+  const c = consultations.find(x => x.id === id);
+  if (c) {
+    c.manager = manager;
+    renderConsultList(consultations);
+    toast('👩', `${manager}에게 배정되었습니다`);
+  }
+}
+
+function contactWhatsApp(num) {
+  toast('💬', `WhatsApp 연락: ${num}`);
+}
+
+function saveNote(id) {
+  toast('💾', '메모가 저장되었습니다');
+}
+
+function confirmDelete(id) {
+  if (confirm('이 상담을 삭제하시겠습니까?')) {
+    const idx = consultations.findIndex(x => x.id === id);
+    if (idx !== -1) { consultations.splice(idx, 1); renderConsultList(consultations); closeModal(); toast('🗑', '상담이 삭제되었습니다'); }
+  }
+}
+
+// TOAST
+function toast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// PAGE NAV (simple)
+function showPage(page) {
+  const titles = { dashboard:'대시보드', consultations:'상담 신청서 관리', calendar:'예약 캘린더', payments:'결제 관리', reviews:'후기 관리', hospitals:'병원 관리', managers:'매니저 관리', settings:'시스템 설정' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if (page !== 'dashboard') toast('🔄', `${titles[page]} 페이지로 이동합니다`);
+}
+
+function exportData() { toast('📥', 'CSV 파일을 내보내는 중...'); }
+function openNewConsult() { toast('➕', '수동 상담 등록 폼이 준비되었습니다'); }
+function toggleNotifPanel() { /* future */ }
+
+// INIT
+renderConsultList(consultations);
+renderNotifications();
+renderChart();
+renderCalendar();
+
+// Update new count
+document.getElementById('newCount').textContent = consultations.filter(c => c.status === 'new').length;
+</script>
+</body>
+</html>
