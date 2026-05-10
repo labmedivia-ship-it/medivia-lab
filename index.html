@@ -1288,11 +1288,11 @@
         <div class="form-row">
           <div class="form-group">
             <label data-i18n="form_name">이름 / Name</label>
-            <input type="text" placeholder="Kim Min-ji">
+            <input type="text" id="formName" placeholder="Kim Min-ji">
           </div>
           <div class="form-group">
             <label data-i18n="form_country">국가 / Country</label>
-            <select>
+            <select id="formCountry">
               <option>Indonesia 🇮🇩</option>
               <option>Mongolia 🇲🇳</option>
               <option>China 🇨🇳</option>
@@ -1305,11 +1305,11 @@
         <div class="form-row">
           <div class="form-group">
             <label data-i18n="form_email">이메일 / Email</label>
-            <input type="email" placeholder="example@email.com">
+            <input type="email" id="formEmail" placeholder="example@email.com">
           </div>
           <div class="form-group">
             <label data-i18n="form_whatsapp">WhatsApp / 연락처</label>
-            <input type="tel" placeholder="+62 812-xxxx-xxxx">
+            <input type="tel" id="formWhatsapp" placeholder="+62 812-xxxx-xxxx">
           </div>
         </div>
 
@@ -2014,11 +2014,73 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// Form submit
+// Form submit — 데이터 저장 후 signup으로 이동
 document.querySelector('.btn-submit').addEventListener('click', () => {
-  const msgs = { ko: '상담 신청이 완료되었습니다! 24시간 내에 전담 매니저가 연락드릴게요. 감사합니다 😊', en: 'Consultation submitted! A manager will contact you within 24 hours. Thank you 😊', zh: '咨询申请成功！专属经理将在24小时内联系您。谢谢 😊', id: 'Konsultasi berhasil dikirim! Manajer akan menghubungi dalam 24 jam. Terima kasih 😊', mn: 'Зөвлөгөөний хүсэлт илгээгдлээ! Менежер 24 цагийн дотор холбогдоно. Баярлалаа 😊' };
-  alert(msgs[currentLang] || msgs['ko']);
+  // 폼 데이터 저장
+  const formData = {
+    name: document.getElementById('formName')?.value || '',
+    country: document.getElementById('formCountry')?.value || '',
+    email: document.getElementById('formEmail')?.value || '',
+    whatsapp: document.getElementById('formWhatsapp')?.value || '',
+    date: document.getElementById('formDateInput')?.value || '',
+    note: document.getElementById('formTextarea')?.value || '',
+    budget: document.querySelector('#bopt0')?.parentElement?.value || '',
+    tags: Array.from(document.querySelectorAll('.form-tag.selected')).map(t => t.textContent.trim()),
+  };
+  localStorage.setItem('medivia_consult', JSON.stringify(formData));
+  localStorage.setItem('medivia_from_consult', '1');
+
+  // signup 페이지로 이동
+  location.href = 'signup.html';
 });
+
+// 페이지 로드 시 저장된 데이터 복원
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('medivia_consult');
+  const fromConsult = localStorage.getItem('medivia_from_consult');
+
+  if (saved && fromConsult === '1') {
+    try {
+      const d = JSON.parse(saved);
+      if (document.getElementById('formName')) document.getElementById('formName').value = d.name || '';
+      if (document.getElementById('formEmail')) document.getElementById('formEmail').value = d.email || '';
+      if (document.getElementById('formWhatsapp')) document.getElementById('formWhatsapp').value = d.whatsapp || '';
+      if (document.getElementById('formDateInput')) document.getElementById('formDateInput').value = d.date || '';
+      if (document.getElementById('formTextarea')) document.getElementById('formTextarea').value = d.note || '';
+      if (document.getElementById('formCountry') && d.country) {
+        const sel = document.getElementById('formCountry');
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].text === d.country || sel.options[i].value === d.country) {
+            sel.selectedIndex = i; break;
+          }
+        }
+      }
+      // 태그 복원
+      if (d.tags && d.tags.length) {
+        document.querySelectorAll('.form-tag').forEach(tag => {
+          if (d.tags.includes(tag.textContent.trim())) tag.classList.add('selected');
+        });
+      }
+
+      // 완료 메시지 표시
+      localStorage.removeItem('medivia_from_consult');
+
+      // 상담 폼으로 스크롤
+      setTimeout(() => {
+        const consult = document.getElementById('consult');
+        if (consult) consult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // 완료 배너 표시
+        const banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#0F0F0F;color:white;padding:14px 28px;border-radius:50px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:10px;animation:fadeInDown 0.4s ease';
+        banner.innerHTML = '✅ 가입 완료! 입력하신 정보를 확인하고 상담 신청하기를 눌러주세요.';
+        document.body.appendChild(banner);
+        setTimeout(() => banner.remove(), 5000);
+      }, 300);
+    } catch(e) {}
+  }
+});
+
 </script>
 </body>
 </html>
