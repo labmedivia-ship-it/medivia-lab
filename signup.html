@@ -504,22 +504,24 @@
       </div>
     </div>
 
-    <!-- STEP 2: 추가 정보 -->
+    <!-- STEP 2: 구글 전용 추가 정보 -->
     <div id="step2">
       <div class="social-connected">
-        ✅ <span id="connectedMsg">Google account connected</span>
+        ✅ <span id="connectedMsg">Google account connected ✓</span>
       </div>
 
       <div class="step2-title">Almost there!</div>
-      <div class="step2-sub">Just a few details so your manager can reach you in the right language.</div>
+      <div class="step2-sub">Just a few more details to complete your account.</div>
 
       <div class="required-note"><span>*</span> Required fields</div>
 
+      <!-- 1. Full Name -->
       <div class="form-group2">
         <label>Full Name <span style="color:#e53e3e">*</span></label>
         <input type="text" placeholder="e.g. Putri Andiani" id="nameInput">
       </div>
 
+      <!-- 2. Country -->
       <div class="form-group2">
         <label>Country <span style="color:#e53e3e">*</span></label>
         <select id="countryInput">
@@ -536,49 +538,45 @@
         </select>
       </div>
 
+      <!-- 3. Google ID (이메일) -->
       <div class="form-group2">
-        <label>WhatsApp Number <span style="color:#e53e3e">*</span></label>
-        <div class="whatsapp-wrap">
-          <span class="whatsapp-prefix">📱</span>
-          <input type="tel" placeholder="+62 812-xxxx-xxxx" id="waInput">
+        <label>Google Account (Email) <span style="color:#e53e3e">*</span></label>
+        <div style="position:relative;">
+          <div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+          </div>
+          <input type="email" id="googleEmailInput" placeholder="yourname@gmail.com" style="padding-left:42px;">
+        </div>
+        <div style="font-size:11px;color:var(--gray);margin-top:5px;">인증 메일이 이 주소로 발송됩니다 · Verification email will be sent here</div>
+      </div>
+
+      <!-- 인증 메일 발송 버튼 -->
+      <div id="verifySection" style="margin-bottom:14px;">
+        <button onclick="sendVerifyEmail()" id="verifyBtn" style="width:100%;padding:12px;background:white;border:1.5px solid var(--gray-light);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--dark);cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;">
+          📧 Send Verification Email
+        </button>
+      </div>
+
+      <!-- 인증 코드 입력 (발송 후 표시) -->
+      <div id="codeSection" style="display:none;margin-bottom:14px;">
+        <div class="form-group2">
+          <label>Verification Code <span style="color:#e53e3e">*</span></label>
+          <input type="text" id="verifyCodeInput" placeholder="6자리 코드 입력 · Enter 6-digit code" maxlength="6" style="letter-spacing:4px;font-size:18px;text-align:center;">
+          <div style="font-size:11px;color:var(--gray);margin-top:5px;">
+            코드를 받지 못하셨나요? <a onclick="sendVerifyEmail()" style="color:var(--gold-dark);cursor:pointer;">재발송</a>
+          </div>
+        </div>
+        <div id="verifiedBadge" style="display:none;background:var(--green-bg);border:1px solid rgba(45,140,94,0.2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--green);margin-bottom:12px;">
+          ✅ Email verified successfully!
         </div>
       </div>
 
-      <div class="form-group2">
-        <label>Preferred Language</label>
-        <select id="langInput">
-          <option value="en">🇺🇸 English</option>
-          <option value="id">🇮🇩 Bahasa Indonesia</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="mn">🇲🇳 Монгол</option>
-          <option value="ko">🇰🇷 한국어</option>
-        </select>
-      </div>
-
-      <div class="form-group2">
-        <label>Interested Procedures (optional)</label>
-        <div class="tags-wrap">
-          <div class="interest-tag" onclick="toggleTag(this)">👁 Eye Surgery</div>
-          <div class="interest-tag" onclick="toggleTag(this)">👃 Rhinoplasty</div>
-          <div class="interest-tag" onclick="toggleTag(this)">💉 Skin Treatment</div>
-          <div class="interest-tag" onclick="toggleTag(this)">⚖️ Body Contouring</div>
-          <div class="interest-tag" onclick="toggleTag(this)">💆 Lifting</div>
-          <div class="interest-tag" onclick="toggleTag(this)">🦷 Dental</div>
-          <div class="interest-tag" onclick="toggleTag(this)">✨ Other</div>
-        </div>
-      </div>
-
-      <div class="form-group2">
-        <label>Planned Visit</label>
-        <select>
-          <option>Within 1 month</option>
-          <option>1–3 months</option>
-          <option>3–6 months</option>
-          <option>Just exploring</option>
-        </select>
-      </div>
-
-      <button class="submit-btn" onclick="completeSignup()">
+      <button class="submit-btn" onclick="completeSignup()" id="completeBtn">
         Complete Sign Up ✨
       </button>
 
@@ -654,17 +652,69 @@ function toggleTag(el) {
   el.classList.toggle('selected');
 }
 
+let verifyCode = '';
+let emailVerified = false;
+
+function sendVerifyEmail() {
+  const email = document.getElementById('googleEmailInput').value;
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid Google email address.');
+    return;
+  }
+
+  // 6자리 랜덤 코드 생성 (실제로는 서버에서 처리)
+  verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const btn = document.getElementById('verifyBtn');
+  btn.innerHTML = '⏳ Sending...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.innerHTML = `📧 Code sent to ${email}`;
+    btn.style.background = 'var(--green-bg)';
+    btn.style.borderColor = 'rgba(45,140,94,0.3)';
+    btn.style.color = 'var(--green)';
+
+    // 코드 입력 섹션 표시
+    document.getElementById('codeSection').style.display = 'block';
+
+    // 개발용: 코드 자동 입력 안내 (실제 배포 시 제거)
+    console.log('Verify code (dev only):', verifyCode);
+    // 테스트용으로 화면에 임시 표시
+    document.getElementById('verifyCodeInput').placeholder = `Code: ${verifyCode} (test)`;
+  }, 1500);
+}
+
+// 코드 입력 시 자동 확인
+document.addEventListener('DOMContentLoaded', () => {
+  const codeInput = document.getElementById('verifyCodeInput');
+  if (codeInput) {
+    codeInput.addEventListener('input', function() {
+      if (this.value.length === 6) {
+        if (this.value === verifyCode) {
+          emailVerified = true;
+          this.style.borderColor = 'var(--green)';
+          document.getElementById('verifiedBadge').style.display = 'block';
+        } else {
+          this.style.borderColor = 'var(--red, #DC2626)';
+          emailVerified = false;
+        }
+      }
+    });
+  }
+});
+
 function completeSignup() {
   const name = document.getElementById('nameInput').value;
   const country = document.getElementById('countryInput').value;
-  const wa = document.getElementById('waInput').value;
+  const googleEmail = document.getElementById('googleEmailInput').value;
 
   if (!name) { alert('Please enter your full name.'); return; }
   if (!country) { alert('Please select your country.'); return; }
-  if (!wa) { alert('Please enter your WhatsApp number.'); return; }
+  if (!googleEmail) { alert('Please enter your Google account email.'); return; }
+  if (!emailVerified) { alert('Please verify your email first.\n인증 메일을 먼저 확인해주세요.'); return; }
 
-  // 로딩
-  const btn = event.currentTarget;
+  const btn = document.getElementById('completeBtn');
   btn.innerHTML = '⏳ Creating your account...';
   btn.disabled = true;
 
@@ -672,13 +722,12 @@ function completeSignup() {
     document.getElementById('step2').style.display = 'none';
     const ss = document.getElementById('stepSuccess');
     ss.style.display = 'block';
-
-    // dots
     document.getElementById('dot2').classList.remove('active');
     document.getElementById('dot2').classList.add('done');
     document.getElementById('stepLabel').textContent = '🎉 Account created!';
   }, 1500);
 }
+
 </script>
 </body>
 </html>
