@@ -531,40 +531,6 @@
   .form-tag:hover { border-color: var(--gold); color: var(--gold-dark); }
   .form-tag.selected { background: var(--gold-dark); border-color: var(--gold-dark); color: white; }
 
-  .form-tag-wrap { display: inline-block; margin-bottom: 4px; }
-
-  .sub-tags {
-    display: none;
-    flex-wrap: wrap; gap: 6px;
-    padding: 10px 12px;
-    background: var(--cream);
-    border: 1.5px solid var(--gold-light);
-    border-radius: var(--radius-sm);
-    margin-top: 6px;
-    margin-bottom: 4px;
-    width: max-content;
-    max-width: 320px;
-    animation: fadeDown 0.2s ease;
-  }
-  .sub-tags.open { display: flex; }
-
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .sub-tag {
-    padding: 5px 12px;
-    border: 1.5px solid var(--gray-light);
-    border-radius: 20px;
-    font-size: 12px; color: var(--gray);
-    cursor: pointer; transition: var(--transition);
-    background: white;
-    white-space: nowrap;
-  }
-  .sub-tag:hover { border-color: var(--gold); color: var(--gold-dark); }
-  .sub-tag.selected { background: var(--gold-dark); border-color: var(--gold-dark); color: white; }
-
   .upload-area {
     border: 2px dashed var(--gray-light);
     border-radius: var(--radius-sm);
@@ -1053,7 +1019,8 @@
     <li><a href="#hospitals" data-i18n="nav_hospitals">제휴 병원</a></li>
     <li><a href="#reviews" data-i18n="nav_reviews">환자 후기</a></li>
     <li><a href="#why" data-i18n="nav_why">왜 Medivia인가</a></li>
-    <li><a href="#consult" class="nav-cta" data-i18n="nav_consult">무료 상담 신청</a></li>
+    <li><a href="login.html" style="padding:8px 16px;border:1.5px solid var(--gray-light);border-radius:30px;font-size:13px;font-weight:500;color:var(--dark);transition:var(--transition);" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gray-light)'">로그인</a></li>
+    <li><a href="signup.html" class="nav-cta" data-i18n="nav_consult">무료 상담 신청</a></li>
   </ul>
 
   <div class="lang-switcher" id="langSwitcher" onclick="toggleLang()">
@@ -1350,72 +1317,13 @@
         <div class="form-group">
           <label data-i18n="form_proc">원하는 시술 부위 (복수 선택 가능)</label>
           <div class="form-tags" id="formTagsContainer">
-
-            <!-- 👁 눈 성형 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag0" onclick="toggleTagGroup(this, 'sub-eye')">👁 눈 성형 ▾</div>
-              <div class="sub-tags" id="sub-eye">
-                <div class="sub-tag" onclick="toggleSubTag(this)">쌍커풀 수술</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">눈매교정</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">재수술</div>
-              </div>
-            </div>
-
-            <!-- 👃 코 성형 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag1" onclick="toggleTagGroup(this, 'sub-nose')">👃 코 성형 ▾</div>
-              <div class="sub-tags" id="sub-nose">
-                <div class="sub-tag" onclick="toggleSubTag(this)">융비술</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">코끝 성형</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">재수술</div>
-              </div>
-            </div>
-
-            <!-- 🦷 치아 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag2" onclick="toggleTagGroup(this, 'sub-dental')">🦷 치아 ▾</div>
-              <div class="sub-tags" id="sub-dental">
-                <div class="sub-tag" onclick="toggleSubTag(this)">라미네이트</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">치아교정</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">임플란트</div>
-              </div>
-            </div>
-
-            <!-- 💉 피부 시술 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag3" onclick="toggleTagGroup(this, 'sub-skin')">💉 피부 시술 ▾</div>
-              <div class="sub-tags" id="sub-skin">
-                <div class="sub-tag" onclick="toggleSubTag(this)">레이저</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">보톡스 / 필러</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">피부 미백</div>
-              </div>
-            </div>
-
-            <!-- ⚖️ 윤곽 / 지방흡입 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag4" onclick="toggleTagGroup(this, 'sub-body')">⚖️ 윤곽 / 지방흡입 ▾</div>
-              <div class="sub-tags" id="sub-body">
-                <div class="sub-tag" onclick="toggleSubTag(this)">광대축소</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">복부 지방흡입</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">허벅지 지방흡입</div>
-              </div>
-            </div>
-
-            <!-- 💆 리프팅 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag5" onclick="toggleTagGroup(this, 'sub-lift')">💆 리프팅 ▾</div>
-              <div class="sub-tags" id="sub-lift">
-                <div class="sub-tag" onclick="toggleSubTag(this)">실 리프팅</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">울쎄라</div>
-                <div class="sub-tag" onclick="toggleSubTag(this)">써마지</div>
-              </div>
-            </div>
-
-            <!-- 기타 -->
-            <div class="form-tag-wrap">
-              <div class="form-tag" id="ftag6" onclick="toggleTag(this)">기타</div>
-            </div>
-
+            <div class="form-tag" id="ftag0" onclick="toggleTag(this)">👁 눈 성형</div>
+            <div class="form-tag" id="ftag1" onclick="toggleTag(this)">👃 코 성형</div>
+            <div class="form-tag" id="ftag2" onclick="toggleTag(this)">🦷 치아</div>
+            <div class="form-tag" id="ftag3" onclick="toggleTag(this)">💉 피부 시술</div>
+            <div class="form-tag" id="ftag4" onclick="toggleTag(this)">⚖️ 윤곽 / 지방흡입</div>
+            <div class="form-tag" id="ftag5" onclick="toggleTag(this)">💆 리프팅</div>
+            <div class="form-tag" id="ftag6" onclick="toggleTag(this)">기타</div>
           </div>
         </div>
 
@@ -2022,16 +1930,6 @@ document.addEventListener('click', (e) => {
 });
 
 function toggleTag(el) {
-  el.classList.toggle('selected');
-}
-
-function toggleTagGroup(el, subId) {
-  el.classList.toggle('selected');
-  const sub = document.getElementById(subId);
-  if (sub) sub.classList.toggle('open');
-}
-
-function toggleSubTag(el) {
   el.classList.toggle('selected');
 }
 
