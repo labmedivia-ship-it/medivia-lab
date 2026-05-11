@@ -531,6 +531,40 @@
   .form-tag:hover { border-color: var(--gold); color: var(--gold-dark); }
   .form-tag.selected { background: var(--gold-dark); border-color: var(--gold-dark); color: white; }
 
+  .form-tag-wrap { display: inline-block; margin-bottom: 4px; }
+
+  .sub-tags {
+    display: none;
+    flex-wrap: wrap; gap: 6px;
+    padding: 10px 12px;
+    background: var(--cream);
+    border: 1.5px solid var(--gold-light);
+    border-radius: var(--radius-sm);
+    margin-top: 6px;
+    margin-bottom: 4px;
+    width: max-content;
+    max-width: 320px;
+    animation: fadeDown 0.2s ease;
+  }
+  .sub-tags.open { display: flex; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sub-tag {
+    padding: 5px 12px;
+    border: 1.5px solid var(--gray-light);
+    border-radius: 20px;
+    font-size: 12px; color: var(--gray);
+    cursor: pointer; transition: var(--transition);
+    background: white;
+    white-space: nowrap;
+  }
+  .sub-tag:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .sub-tag.selected { background: var(--gold-dark); border-color: var(--gold-dark); color: white; }
+
   .upload-area {
     border: 2px dashed var(--gray-light);
     border-radius: var(--radius-sm);
@@ -1019,7 +1053,7 @@
     <li><a href="#hospitals" data-i18n="nav_hospitals">제휴 병원</a></li>
     <li><a href="#reviews" data-i18n="nav_reviews">환자 후기</a></li>
     <li><a href="#why" data-i18n="nav_why">왜 Medivia인가</a></li>
-    <li><a href="signup.html" class="nav-cta" data-i18n="nav_consult">무료 상담 신청</a></li>
+    <li><a href="#consult" class="nav-cta" data-i18n="nav_consult">무료 상담 신청</a></li>
   </ul>
 
   <div class="lang-switcher" id="langSwitcher" onclick="toggleLang()">
@@ -1082,7 +1116,7 @@
     </div>
 
     <div class="hero-actions">
-      <a href="signup.html" class="btn-primary">
+      <a href="#consult" class="btn-primary">
         <span data-i18n="hero_cta1">무료 상담 신청하기</span> →
       </a>
       <a href="#how" class="btn-outline" data-i18n="hero_cta2">어떻게 작동하나요?</a>
@@ -1288,11 +1322,11 @@
         <div class="form-row">
           <div class="form-group">
             <label data-i18n="form_name">이름 / Name</label>
-            <input type="text" id="formName" placeholder="Kim Min-ji">
+            <input type="text" placeholder="Kim Min-ji">
           </div>
           <div class="form-group">
             <label data-i18n="form_country">국가 / Country</label>
-            <select id="formCountry">
+            <select>
               <option>Indonesia 🇮🇩</option>
               <option>Mongolia 🇲🇳</option>
               <option>China 🇨🇳</option>
@@ -1305,24 +1339,83 @@
         <div class="form-row">
           <div class="form-group">
             <label data-i18n="form_email">이메일 / Email</label>
-            <input type="email" id="formEmail" placeholder="example@email.com">
+            <input type="email" placeholder="example@email.com">
           </div>
           <div class="form-group">
             <label data-i18n="form_whatsapp">WhatsApp / 연락처</label>
-            <input type="tel" id="formWhatsapp" placeholder="+62 812-xxxx-xxxx">
+            <input type="tel" placeholder="+62 812-xxxx-xxxx">
           </div>
         </div>
 
         <div class="form-group">
           <label data-i18n="form_proc">원하는 시술 부위 (복수 선택 가능)</label>
           <div class="form-tags" id="formTagsContainer">
-            <div class="form-tag" id="ftag0" onclick="toggleTag(this)">👁 눈 성형</div>
-            <div class="form-tag" id="ftag1" onclick="toggleTag(this)">👃 코 성형</div>
-            <div class="form-tag" id="ftag2" onclick="toggleTag(this)">🦷 치아</div>
-            <div class="form-tag" id="ftag3" onclick="toggleTag(this)">💉 피부 시술</div>
-            <div class="form-tag" id="ftag4" onclick="toggleTag(this)">⚖️ 윤곽 / 지방흡입</div>
-            <div class="form-tag" id="ftag5" onclick="toggleTag(this)">💆 리프팅</div>
-            <div class="form-tag" id="ftag6" onclick="toggleTag(this)">기타</div>
+
+            <!-- 👁 눈 성형 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag0" onclick="toggleTagGroup(this, 'sub-eye')">👁 눈 성형 ▾</div>
+              <div class="sub-tags" id="sub-eye">
+                <div class="sub-tag" onclick="toggleSubTag(this)">쌍커풀 수술</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">눈매교정</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">재수술</div>
+              </div>
+            </div>
+
+            <!-- 👃 코 성형 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag1" onclick="toggleTagGroup(this, 'sub-nose')">👃 코 성형 ▾</div>
+              <div class="sub-tags" id="sub-nose">
+                <div class="sub-tag" onclick="toggleSubTag(this)">융비술</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">코끝 성형</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">재수술</div>
+              </div>
+            </div>
+
+            <!-- 🦷 치아 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag2" onclick="toggleTagGroup(this, 'sub-dental')">🦷 치아 ▾</div>
+              <div class="sub-tags" id="sub-dental">
+                <div class="sub-tag" onclick="toggleSubTag(this)">라미네이트</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">치아교정</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">임플란트</div>
+              </div>
+            </div>
+
+            <!-- 💉 피부 시술 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag3" onclick="toggleTagGroup(this, 'sub-skin')">💉 피부 시술 ▾</div>
+              <div class="sub-tags" id="sub-skin">
+                <div class="sub-tag" onclick="toggleSubTag(this)">레이저</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">보톡스 / 필러</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">피부 미백</div>
+              </div>
+            </div>
+
+            <!-- ⚖️ 윤곽 / 지방흡입 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag4" onclick="toggleTagGroup(this, 'sub-body')">⚖️ 윤곽 / 지방흡입 ▾</div>
+              <div class="sub-tags" id="sub-body">
+                <div class="sub-tag" onclick="toggleSubTag(this)">광대축소</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">복부 지방흡입</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">허벅지 지방흡입</div>
+              </div>
+            </div>
+
+            <!-- 💆 리프팅 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag5" onclick="toggleTagGroup(this, 'sub-lift')">💆 리프팅 ▾</div>
+              <div class="sub-tags" id="sub-lift">
+                <div class="sub-tag" onclick="toggleSubTag(this)">실 리프팅</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">울쎄라</div>
+                <div class="sub-tag" onclick="toggleSubTag(this)">써마지</div>
+              </div>
+            </div>
+
+            <!-- 기타 -->
+            <div class="form-tag-wrap">
+              <div class="form-tag" id="ftag6" onclick="toggleTag(this)">기타</div>
+            </div>
+
           </div>
         </div>
 
@@ -1932,6 +2025,16 @@ function toggleTag(el) {
   el.classList.toggle('selected');
 }
 
+function toggleTagGroup(el, subId) {
+  el.classList.toggle('selected');
+  const sub = document.getElementById(subId);
+  if (sub) sub.classList.toggle('open');
+}
+
+function toggleSubTag(el) {
+  el.classList.toggle('selected');
+}
+
 // Demo chat
 function sendDemoMsg() {
   const input = document.getElementById('demoInput');
@@ -2014,73 +2117,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// Form submit — 데이터 저장 후 signup으로 이동
+// Form submit
 document.querySelector('.btn-submit').addEventListener('click', () => {
-  // 폼 데이터 저장
-  const formData = {
-    name: document.getElementById('formName')?.value || '',
-    country: document.getElementById('formCountry')?.value || '',
-    email: document.getElementById('formEmail')?.value || '',
-    whatsapp: document.getElementById('formWhatsapp')?.value || '',
-    date: document.getElementById('formDateInput')?.value || '',
-    note: document.getElementById('formTextarea')?.value || '',
-    budget: document.querySelector('#bopt0')?.parentElement?.value || '',
-    tags: Array.from(document.querySelectorAll('.form-tag.selected')).map(t => t.textContent.trim()),
-  };
-  localStorage.setItem('medivia_consult', JSON.stringify(formData));
-  localStorage.setItem('medivia_from_consult', '1');
-
-  // signup 페이지로 이동
-  location.href = 'signup.html';
+  const msgs = { ko: '상담 신청이 완료되었습니다! 24시간 내에 전담 매니저가 연락드릴게요. 감사합니다 😊', en: 'Consultation submitted! A manager will contact you within 24 hours. Thank you 😊', zh: '咨询申请成功！专属经理将在24小时内联系您。谢谢 😊', id: 'Konsultasi berhasil dikirim! Manajer akan menghubungi dalam 24 jam. Terima kasih 😊', mn: 'Зөвлөгөөний хүсэлт илгээгдлээ! Менежер 24 цагийн дотор холбогдоно. Баярлалаа 😊' };
+  alert(msgs[currentLang] || msgs['ko']);
 });
-
-// 페이지 로드 시 저장된 데이터 복원
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('medivia_consult');
-  const fromConsult = localStorage.getItem('medivia_from_consult');
-
-  if (saved && fromConsult === '1') {
-    try {
-      const d = JSON.parse(saved);
-      if (document.getElementById('formName')) document.getElementById('formName').value = d.name || '';
-      if (document.getElementById('formEmail')) document.getElementById('formEmail').value = d.email || '';
-      if (document.getElementById('formWhatsapp')) document.getElementById('formWhatsapp').value = d.whatsapp || '';
-      if (document.getElementById('formDateInput')) document.getElementById('formDateInput').value = d.date || '';
-      if (document.getElementById('formTextarea')) document.getElementById('formTextarea').value = d.note || '';
-      if (document.getElementById('formCountry') && d.country) {
-        const sel = document.getElementById('formCountry');
-        for (let i = 0; i < sel.options.length; i++) {
-          if (sel.options[i].text === d.country || sel.options[i].value === d.country) {
-            sel.selectedIndex = i; break;
-          }
-        }
-      }
-      // 태그 복원
-      if (d.tags && d.tags.length) {
-        document.querySelectorAll('.form-tag').forEach(tag => {
-          if (d.tags.includes(tag.textContent.trim())) tag.classList.add('selected');
-        });
-      }
-
-      // 완료 메시지 표시
-      localStorage.removeItem('medivia_from_consult');
-
-      // 상담 폼으로 스크롤
-      setTimeout(() => {
-        const consult = document.getElementById('consult');
-        if (consult) consult.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // 완료 배너 표시
-        const banner = document.createElement('div');
-        banner.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#0F0F0F;color:white;padding:14px 28px;border-radius:50px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:10px;animation:fadeInDown 0.4s ease';
-        banner.innerHTML = '✅ 가입 완료! 입력하신 정보를 확인하고 상담 신청하기를 눌러주세요.';
-        document.body.appendChild(banner);
-        setTimeout(() => banner.remove(), 5000);
-      }, 300);
-    } catch(e) {}
-  }
-});
-
 </script>
 </body>
 </html>
